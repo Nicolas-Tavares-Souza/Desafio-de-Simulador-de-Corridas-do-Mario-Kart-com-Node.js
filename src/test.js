@@ -100,11 +100,10 @@ async function playraceengine(character1, character2) {
         "Velocidade",
         diceResult2,
         character2.Velocidade
-        );
+    );
 
- 
-  }
-  // calcular o resultado do teste de habilidade com base no bloco sorteado e logar o resultado
+}
+// calcular o resultado do teste de habilidade com base no bloco sorteado e logar o resultado
   if (block === "CURVA") {
     totalTestSkill1 = diceResult1 + character1.Manobrabilidade;
     totalTestSkill2 = diceResult2 + character2.Manobrabilidade;
@@ -120,58 +119,68 @@ async function playraceengine(character1, character2) {
         "Manobrabilidade",
         diceResult2,
         character2.Manobrabilidade
-        );
+    );
      
    
-  }
-  // calcular o resultado do teste de habilidade com base no bloco sorteado e logar o resultado
-  if (block === "CONFRONTO") {
-    totalTestSkill1 = diceResult1 + character1.Poder;
-    totalTestSkill2 = diceResult2 + character2.Poder;
-    
-    console.log(`${character1.Nome} confrontou com ${character2.Nome} ! 🥊 `);
-    
-    await logRollResult(
-        character1.Nome,
-        "Poder",
-        diceResult1,
-        character1.Poder
-    );
-    await logRollResult(
-        character2.Nome,
-        "Poder",
-        diceResult2,
-        character2.Poder
-        );
-        
-        
 }
-    
-     // ✅ RESULTADO DA RODADA (PARA TODOS)
-        if (totalTestSkill1 > totalTestSkill2) {
+// calcular o resultado do teste de habilidade com base no bloco sorteado e logar o resultado
+    if (block === "CONFRONTO") {
+        totalTestSkill1 = diceResult1 + character1.Poder;
+        totalTestSkill2 = diceResult2 + character2.Poder;
+        
+        console.log(`${character1.Nome} confrontou com ${character2.Nome} ! 🥊 `);
+        
+        await logRollResult(
+             character1.Nome,
+            "Poder", diceResult1,
+             character1.Poder);
+        await logRollResult(
+              character2.Nome,
+             "Poder",
+              diceResult2,
+              character2.Poder
+            );
+
+        // Sortear item para o perdedor
+        let item = Math.random() < 0.5 ? "CASCO" : "BOMBA";
+        let penalidade = item === "CASCO" ? 1 : 2;
+        console.log(`🎲 Item sorteado: ${item === "CASCO" ? "🐢 Casco" : "💣 Bomba"} (-${penalidade} ponto${penalidade > 1 ? "s" : ""})`);
+
+    if (totalTestSkill1 > totalTestSkill2) {
+            character2.Pontos = Math.max(0, character2.Pontos - penalidade);
+            console.log(`💥 ${character2.Nome} perdeu o confronto e perdeu ${penalidade} ponto(s)!`);
             character1.Pontos++;
-            character2.Pontos--;
-
-            console.log(`🏆 ${character1.Nome} ganhou a rodada (+1 ponto)`);
-            console.log(`💥 ${character2.Nome} perdeu a rodada (-1 ponto)`);
-
-        } else if (totalTestSkill2 > totalTestSkill1) {
+            console.log(`⚡ ${character1.Nome} venceu o confronto e ganhou um turbo (+1 ponto)!`);
+        
+    } else if (totalTestSkill2 > totalTestSkill1) {
+            character1.Pontos = Math.max(0, character1.Pontos - penalidade);
+            console.log(`💥 ${character1.Nome} perdeu o confronto e perdeu ${penalidade} ponto(s)!`);
             character2.Pontos++;
-            character1.Pontos--;
-
-            console.log(`🏆 ${character2.Nome} ganhou a rodada (+1 ponto)`);
-            console.log(`💥 ${character1.Nome} perdeu a rodada (-1 ponto)`);
+            console.log(`⚡ ${character2.Nome} venceu o confronto e ganhou um turbo (+1 ponto)!`);
 
         } else {
-            console.log("🤝 Empate! Ninguém ganhou ou perdeu pontos.");
-
+            console.log("🤝 Confronto empatado! Ninguém perdeu ou ganhou pontos.");
+        }
+     }
+    
+    // ✅ RESULTADO DA RODADA (PARA TODOS)
+    if (block !== "CONFRONTO") {
+        if (totalTestSkill1 > totalTestSkill2) {
+        character1.Pontos++;
+        console.log(`🏆 ${character1.Nome} ganhou a rodada (+1 ponto)`);
+} else if (totalTestSkill2 > totalTestSkill1) {
+        character2.Pontos++;  
+        console.log(`🏆 ${character2.Nome} ganhou a rodada (+1 ponto)`);
+    } else {
+        console.log("🤝 Empate! Ninguém ganhou ou perdeu pontos.");
+    }
 }
 
    
    console.log("----------------------------") 
 
-    }
- // ✅ RESULTADO FINAL (fora do loop)
+}
+// ✅ RESULTADO FINAL (fora do loop)
     console.log("\n🏁 Resultado final:");
     console.log(`${character1.Nome}: ${character1.Pontos} pontos`);
     console.log(`${character2.Nome}: ${character2.Pontos} pontos`);
